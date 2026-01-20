@@ -1,11 +1,21 @@
 package com.couriersphere.entity;
 
-import jakarta.persistence.*;
 import java.time.LocalDateTime;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "courier_companies")
-
+@NoArgsConstructor
+@AllArgsConstructor
 public class CourierCompany {
 
     public Long getId() {
@@ -104,24 +114,8 @@ public class CourierCompany {
 		this.country = country;
 	}
 
-	public CourierCompany(Long id, String firstName, String lastName, String email, String password, String contact,
-			String street, String landmark, String city, String pincode, String state, String country,
-			LocalDateTime createdAt) {
-		super();
-		this.id = id;
-		this.firstName = firstName;
-		this.lastName = lastName;
-		this.email = email;
-		this.password = password;
-		this.contact = contact;
-		this.street = street;
-		this.landmark = landmark;
-		this.city = city;
-		this.pincode = pincode;
-		this.state = state;
-		this.country = country;
-		this.createdAt = createdAt;
-	}
+	
+	
 
 	public LocalDateTime getCreatedAt() {
 		return createdAt;
