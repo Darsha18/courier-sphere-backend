@@ -1,38 +1,12 @@
 package com.couriersphere.dto;
 
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-import lombok.Getter;
-import lombok.Setter;
+public class DeliveryPersonRegisterRequest {
 
-@Getter
-@Setter
-public class CustomerRegisterRequest {
-
-    @NotBlank
     private String firstName;
-
-    @NotBlank
     private String lastName;
-
-    @Email
     private String email;
-
-    public CustomerRegisterRequest(@NotBlank String firstName, @NotBlank String lastName, @Email String email,
-			@NotBlank String password, String contact, String address) {
-		super();
-		this.firstName = firstName;
-		this.lastName = lastName;
-		this.email = email;
-		this.password = password;
-		this.contact = contact;
-		this.address = address;
-	}
-	@NotBlank
     private String password;
-
     private String contact;
-    private String address;
 	public String getFirstName() {
 		return firstName;
 	}
@@ -63,12 +37,6 @@ public class CustomerRegisterRequest {
 	public void setContact(String contact) {
 		this.contact = contact;
 	}
-	public String getAddress() {
-		return address;
-	}
-	public void setAddress(String address) {
-		this.address = address;
-	}
 
-    // getters and setters
+    // getters & setters
 }
