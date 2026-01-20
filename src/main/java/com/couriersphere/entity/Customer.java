@@ -2,6 +2,7 @@ package com.couriersphere.entity;
 
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Table(name = "customers")
@@ -30,6 +31,10 @@ public class Customer {
     void onCreate() {
         this.createdAt = LocalDateTime.now();
     }
+    
+    @OneToMany(mappedBy = "customer")
+    private List<Courier> couriers;
+
 
     // ---------- GETTERS & SETTERS ----------
 

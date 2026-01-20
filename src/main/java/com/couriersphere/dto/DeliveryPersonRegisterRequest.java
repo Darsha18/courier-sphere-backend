@@ -1,5 +1,10 @@
 package com.couriersphere.dto;
 
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
 public class DeliveryPersonRegisterRequest {
 
     private String firstName;

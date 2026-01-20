@@ -1,9 +1,24 @@
 package com.couriersphere.controller;
 
-import com.couriersphere.dto.*;
+import java.util.List;
+
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.couriersphere.dto.ApiResponse;
+import com.couriersphere.dto.CustomerBookCourierRequest;
+import com.couriersphere.dto.CustomerCourierCompanyResponse;
+import com.couriersphere.dto.CustomerLoginRequest;
+import com.couriersphere.dto.CustomerRegisterRequest;
+import com.couriersphere.dto.CustomerResponse;
 import com.couriersphere.service.CustomerService;
+
 import jakarta.validation.Valid;
-import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/customer")
@@ -32,4 +47,17 @@ public class CustomerController {
     public ApiResponse<CustomerResponse> profile(@PathVariable Long id) {
         return customerService.getProfile(id);
     }
+    @GetMapping("/courier-companies")
+    public ApiResponse<List<CustomerCourierCompanyResponse>> getCourierCompanies() {
+        return customerService.getCourierCompanies();
+    }
+    
+    @PostMapping("/{customerId}/book-courier")
+    public ApiResponse<String> bookCourier(
+            @PathVariable Long customerId,
+            @RequestBody CustomerBookCourierRequest request) {
+        return customerService.bookCourier(customerId, request);
+    }
+
+
 }

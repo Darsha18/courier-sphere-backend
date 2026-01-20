@@ -38,4 +38,21 @@ public class CourierCompanyController {
     public ApiResponse<?> getDeliveryPersons(@PathVariable Long companyId) {
         return service.getDeliveryPersons(companyId);
     }
+    
+    @PostMapping("/{companyId}/delivery-person")
+    public ApiResponse<String> addDeliveryPerson(
+            @PathVariable Long companyId,
+            @RequestBody CompanyAddDeliveryPersonRequest request) {
+
+        return service.addDeliveryPerson(companyId, request);
+    }
+
+    @DeleteMapping("/{companyId}/delivery-person/{deliveryPersonId}")
+    public ApiResponse<String> deleteDeliveryPerson(
+            @PathVariable Long companyId,
+            @PathVariable Long deliveryPersonId) {
+
+        return service.deleteDeliveryPerson(companyId, deliveryPersonId);
+    }
+
 }

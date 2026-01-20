@@ -92,4 +92,62 @@ public class CourierCompanyServiceImpl implements CourierCompanyService {
         return new ApiResponse<>(true, "Delivery persons list",
                 deliveryRepo.findByCourierCompanyId(companyId));
     }
+    
+    @Override
+    public ApiResponse<String> addDeliveryPerson(
+            Long companyId,
+            CompanyAddDeliveryPersonRequest request) {
+
+        CourierCompany company = companyRepo.findById(companyId)
+                .orElseThrow(() -> new RuntimeException("Courier company not found"));
+
+        DeliveryPerson dp = new DeliveryPerson();
+        dp.setFirstName(request.getFirstName());
+        dp.setLastName(request.getLastName());
+        dp.setEmail(request.getEmail());
+        dp.setPassword(request.getPassword());
+        dp.setContact(request.getContact());
+        dp.setCourierCompany(company);
+        dp.setActive(true);
+
+        deliveryRepo.save(dp);
+
+        return new ApiResponse<>(
+                true,
+                "Delivery person added successfully",
+                null
+        );
+    }
+    
+    @Override
+    public ApiResponse<String> deleteDeliveryPerson(
+            Long companyId,
+            Long deliveryPersonId) {
+
+        DeliveryPerson dp = deliveryRepo.findById(deliveryPersonId)
+                .orElseThrow(() -> new RuntimeException("Delivery person not found"));
+
+        // 🔒 Ensure same company
+        if (!dp.getCourierCompany().getId().equals(companyId)) {
+            throw new RuntimeException("Unauthorized delivery person access");
+        }
+
+        boolean assigned =
+                courierRepo.existsByDeliveryPersonId(deliveryPersonId);
+
+        if (assigned) {
+            throw new RuntimeException(
+                    "Cannot delete delivery person with assigned couriers");
+        }
+
+        deliveryRepo.delete(dp);
+
+        return new ApiResponse<>(
+                true,
+                "Delivery person deleted successfully",
+                null
+        );
+    }
+
+
 }

@@ -1,20 +1,41 @@
 package com.couriersphere.service;
 
-import com.couriersphere.dto.*;
-import com.couriersphere.entity.Customer;
-import com.couriersphere.repository.CustomerRepository;
+import java.util.List;
+import java.util.UUID;
+
 import org.springframework.stereotype.Service;
 
-import java.util.UUID;
+import com.couriersphere.dto.ApiResponse;
+import com.couriersphere.dto.CustomerBookCourierRequest;
+import com.couriersphere.dto.CustomerCourierCompanyResponse;
+import com.couriersphere.dto.CustomerLoginRequest;
+import com.couriersphere.dto.CustomerRegisterRequest;
+import com.couriersphere.dto.CustomerResponse;
+import com.couriersphere.entity.Courier;
+import com.couriersphere.entity.CourierCompany;
+import com.couriersphere.entity.Customer;
+import com.couriersphere.repository.CourierCompanyRepository;
+import com.couriersphere.repository.CourierRepository;
+import com.couriersphere.repository.CustomerRepository;
 
 @Service
 public class CustomerServiceImpl implements CustomerService {
 
     private final CustomerRepository customerRepository;
+    private final CourierRepository courierRepository;
+    private final CourierCompanyRepository courierCompanyRepository;
 
-    public CustomerServiceImpl(CustomerRepository customerRepository) {
+
+    public CustomerServiceImpl(
+            CustomerRepository customerRepository,
+            CourierRepository courierRepository,
+            CourierCompanyRepository courierCompanyRepository) {
+
         this.customerRepository = customerRepository;
+        this.courierRepository = courierRepository;
+        this.courierCompanyRepository = courierCompanyRepository;
     }
+
 
     @Override
     public ApiResponse<CustomerResponse> register(CustomerRegisterRequest request) {
@@ -84,4 +105,63 @@ public class CustomerServiceImpl implements CustomerService {
                 c.getAddress()
         );
     }
+
+    @Override
+    public ApiResponse<List<CustomerCourierCompanyResponse>> getCourierCompanies() {
+
+        List<CourierCompany> companies = courierCompanyRepository.findAll();
+
+        List<CustomerCourierCompanyResponse> response =
+                companies.stream()
+                        .map(c -> new CustomerCourierCompanyResponse(
+                                c.getId(),
+                                c.getFirstName() + " " + c.getLastName(),
+                                c.getCity(),
+                                c.getState(),
+                                c.getCountry(),
+                                c.getContact()
+                        ))
+                        .toList();
+
+        return new ApiResponse<>(
+                true,
+                "Courier companies fetched successfully",
+                response
+        );
+    }
+    
+    @Override
+    public ApiResponse<String> bookCourier(
+            Long customerId,
+            CustomerBookCourierRequest request) {
+
+        Customer customer = customerRepository.findById(customerId)
+                .orElseThrow(() -> new RuntimeException("Customer not found"));
+
+        CourierCompany company = courierCompanyRepository
+                .findById(request.getCourierCompanyId())
+                .orElseThrow(() -> new RuntimeException("Courier company not found"));
+
+        Courier courier = new Courier();
+        courier.setCustomer(customer);
+        courier.setCourierCompany(company);
+        courier.setCourierType(request.getCourierType());
+        courier.setWeight(request.getWeight());
+        courier.setReceiverName(request.getReceiverName());
+        courier.setReceiverAddress(request.getReceiverAddress());
+
+        // Initial system values
+        courier.setStatus("BOOKED");
+        courier.setTrackingNumber(null); // generated later by courier company
+
+        courierRepository.save(courier);
+
+        return new ApiResponse<>(
+                true,
+                "Courier booked successfully. Awaiting courier company assignment.",
+                null
+        );
+    }
+
+
 }
