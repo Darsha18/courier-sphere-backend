@@ -1,11 +1,24 @@
 package com.couriersphere.entity;
 
-import jakarta.persistence.*;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.time.LocalTime;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.Table;
+import lombok.Getter;
+import lombok.Setter;
 
 @Entity
 @Table(name = "couriers")
+@Setter
+@Getter
 public class Courier {
 
     @Id
@@ -26,9 +39,16 @@ public class Courier {
     private String status;
 
     private LocalDate courierDate;
+    private String deliveryMessage;
+
+    private LocalDate deliveryDate;
+    private LocalTime deliveryTime;
+
 
     @ManyToOne
+    @JoinColumn(name = "customer_id")
     private Customer customer;
+
 
     public Courier(Long id, String trackingNumber, String courierName, String courierType, double weight,
 			String senderName, String receiverName, String receiverAddress, String status, LocalDate courierDate,

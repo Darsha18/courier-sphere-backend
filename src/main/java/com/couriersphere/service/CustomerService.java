@@ -1,5 +1,7 @@
 package com.couriersphere.service;
 
+import java.util.List;
+
 import com.couriersphere.dto.*;
 
 public interface CustomerService {
@@ -9,4 +11,12 @@ public interface CustomerService {
     ApiResponse<CustomerResponse> login(CustomerLoginRequest request);
 
     ApiResponse<CustomerResponse> getProfile(Long customerId);
+    
+    ApiResponse<List<CustomerCourierCompanyResponse>> getCourierCompanies();
+    
+    ApiResponse<String> bookCourier(
+            Long customerId,
+            CustomerBookCourierRequest request);
+
+
 }
