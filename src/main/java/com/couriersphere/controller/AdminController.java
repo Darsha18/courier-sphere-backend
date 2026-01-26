@@ -19,6 +19,11 @@ public class AdminController {
         this.adminService = adminService;
     }
 
+    @GetMapping("/customers")
+    public ApiResponse<List<AdminCustomerResponse>> getAllCustomers() {
+        return adminService.getAllCustomers();
+    }
+
     @PostMapping("/register")
     public ApiResponse<AdminResponse> registerAdmin(
             @Valid @RequestBody AdminRegisterRequest request) {
@@ -32,11 +37,11 @@ public class AdminController {
     }
     
     @GetMapping("/courier-companies")
-    public ApiResponse<List<CourierCompanyDTO>> getAllCourierCompanies() {
+    public ApiResponse<List<AdminCourierCompanyResponse>> getAllCourierCompanies() {
         return adminService.getAllCourierCompanies();
     }
     @GetMapping("/delivery-persons")
-    public ApiResponse<List<DeliveryPersonDTO>> getAllDeliveryPersons() {
+    public ApiResponse<List<AdminDeliveryPersonResponse>> getAllDeliveryPersons() {
         return adminService.getAllDeliveryPersons();
     }
     
@@ -47,7 +52,7 @@ public class AdminController {
 
     @PostMapping("/courier-company")
     public ApiResponse<String> addCourierCompany(
-            @RequestBody AddCourierCompanyRequest request) {
+            @RequestBody AdminAddCourierCompanyRequest request) {
         return adminService.addCourierCompany(request);
     }
 

@@ -2,6 +2,9 @@ package com.couriersphere.controller;
 
 import com.couriersphere.dto.*;
 import com.couriersphere.service.CourierCompanyService;
+
+import java.util.List;
+
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -15,37 +18,86 @@ public class CourierCompanyController {
         this.service = service;
     }
 
-    @PostMapping("/{companyId}/add-courier")
-    public ApiResponse<?> addCourier(
-            @PathVariable Long companyId,
-            @RequestBody AddCourierDTO request) {
-        return service.addCustomerCourier(companyId, request);
+    // ===============================
+    // LOGIN
+    // ===============================
+    @PostMapping("/login")
+    public ApiResponse<CourierCompanyResponse> login(
+            @RequestBody CourierCompanyLoginRequest request) {
+
+        return service.login(request);
     }
 
+    // ===============================
+    // LOGOUT
+    // ===============================
+    @PostMapping("/logout")
+    public ApiResponse<String> logout() {
+        return new ApiResponse<>(true, "Logged out successfully", null);
+    }
+
+    // ===============================
+    // ASSIGN DELIVERY PERSON
+    // ===============================
     @PostMapping("/assign-delivery")
-    public ApiResponse<?> assignDelivery(@RequestBody AssignDeliveryRequest request) {
+    public ApiResponse<?> assignDelivery(
+            @RequestBody AssignDeliveryRequest request) {
+
         return service.assignDelivery(request);
     }
 
-    @GetMapping("/{companyId}/delivery-persons")
-    public ApiResponse<?> getDeliveryPersons(@PathVariable Long companyId) {
+    // ===============================
+    // VIEW DELIVERY PERSONS
+    // Gets companyId from request parameter (sent from frontend)
+    // ===============================
+    @GetMapping("/delivery-persons")
+    public ApiResponse<List<DeliveryPersonResponse>> getDeliveryPersons(
+            @RequestParam("companyId") Long companyId) {
+
         return service.getDeliveryPersons(companyId);
     }
-    
-    @PostMapping("/{companyId}/delivery-person")
+
+    // ===============================
+    // ADD DELIVERY PERSON
+    // Gets companyId from request parameter (sent from frontend)
+    // ===============================
+    @PostMapping("/delivery-person")
     public ApiResponse<String> addDeliveryPerson(
-            @PathVariable Long companyId,
-            @RequestBody AddDeliveryPersonDTO request) {
+            @RequestParam("companyId") Long companyId,
+            @RequestBody CompanyAddDeliveryPersonRequest request) {
 
         return service.addDeliveryPerson(companyId, request);
     }
 
-    @DeleteMapping("/{companyId}/delivery-person/{deliveryPersonId}")
+    // ===============================
+    // DELETE DELIVERY PERSON
+    // Gets companyId from request parameter (sent from frontend)
+    // ===============================
+    @DeleteMapping("/delivery-person/{deliveryPersonId}")
     public ApiResponse<String> deleteDeliveryPerson(
-            @PathVariable Long companyId,
+            @RequestParam("companyId") Long companyId,
             @PathVariable Long deliveryPersonId) {
 
         return service.deleteDeliveryPerson(companyId, deliveryPersonId);
     }
 
+    @PutMapping("/delivery-person/{deliveryPersonId}/status")
+    public ApiResponse<String> updateDeliveryPersonStatus(
+            @RequestParam("companyId") Long companyId,
+            @PathVariable Long deliveryPersonId,
+            @RequestParam("active") boolean active) {
+
+        return service.updateDeliveryPersonStatus(companyId, deliveryPersonId, active);
+    }
+
+    // ===============================
+    // VIEW ALL COURIERS
+    // Gets companyId from request parameter (sent from frontend)
+    // ===============================
+    @GetMapping("/couriers")
+    public ApiResponse<List<CompanyCourierResponse>> getCompanyCouriers(
+            @RequestParam("companyId") Long companyId) {
+
+        return service.getCompanyCouriers(companyId);
+    }
 }

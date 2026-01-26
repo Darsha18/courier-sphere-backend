@@ -43,8 +43,7 @@ public class DeliveryPersonServiceImpl implements DeliveryPersonService {
                 new DeliveryPersonLoginResponse(
                         dp.getId(),
                         dp.getFirstName() + " " + dp.getLastName(),
-                        dp.getCourierCompany().getFullName() + " " 
-                        
+                        dp.getCourierCompany().getCompanyName()
                 );
 
         return new ApiResponse<>(

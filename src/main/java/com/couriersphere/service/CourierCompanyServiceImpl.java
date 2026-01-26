@@ -1,55 +1,49 @@
 package com.couriersphere.service;
 
-import java.util.UUID;
-
+import com.couriersphere.dto.*;
+import com.couriersphere.entity.*;
+import com.couriersphere.repository.*;
 import org.springframework.stereotype.Service;
 
-import com.couriersphere.dto.AddCourierDTO;
-import com.couriersphere.dto.AddDeliveryPersonDTO;
-import com.couriersphere.dto.ApiResponse;
-import com.couriersphere.dto.AssignDeliveryRequest;
-import com.couriersphere.entity.Courier;
-import com.couriersphere.entity.CourierCompany;
-import com.couriersphere.entity.Customer;
-import com.couriersphere.entity.DeliveryPerson;
-import com.couriersphere.repository.CourierCompanyRepository;
-import com.couriersphere.repository.CourierRepository;
-import com.couriersphere.repository.CustomerRepository;
-import com.couriersphere.repository.DeliveryPersonRepository;
-
-import lombok.AllArgsConstructor;
+import java.util.List;
+import java.util.UUID;
 
 @Service
-@AllArgsConstructor
 public class CourierCompanyServiceImpl implements CourierCompanyService {
 
     private final CourierCompanyRepository companyRepo;
     private final DeliveryPersonRepository deliveryRepo;
-    private final CustomerRepository customerRepo;
     private final CourierRepository courierRepo;
 
-    
+    public CourierCompanyServiceImpl(
+            CourierCompanyRepository companyRepo,
+            DeliveryPersonRepository deliveryRepo,
+            CourierRepository courierRepo) {
+
+        this.companyRepo = companyRepo;
+        this.deliveryRepo = deliveryRepo;
+        this.courierRepo = courierRepo;
+    }
+
     @Override
-    public ApiResponse<?> addCustomerCourier(Long companyId, AddCourierDTO request) {
+    public ApiResponse<CourierCompanyResponse> login(
+            CourierCompanyLoginRequest request) {
 
-        CourierCompany company = companyRepo.findById(companyId)
-                .orElseThrow(() -> new RuntimeException("Courier company not found"));
+        CourierCompany company = companyRepo.findByEmail(request.getEmail())
+                .orElseThrow(() -> new RuntimeException("Invalid credentials"));
 
-        Customer customer = customerRepo.findByCustomerRefId(request.getCustomerRefId())
-                .orElseThrow(() -> new RuntimeException("Customer not found"));
+        if (!company.getPassword().equals(request.getPassword())) {
+            throw new RuntimeException("Invalid credentials");
+        }
 
-        Courier courier = new Courier();
-        courier.setCourierName(request.getCourierName());
-        courier.setCourierType(request.getCourierType());
-        courier.setWeight(request.getWeight());
-        courier.setReceiverName(request.getReceiverName());
-        courier.setReceiverAddress(request.getReceiverAddress());
-        courier.setCustomer(customer);
-        courier.setCourierCompany(company);
+        CourierCompanyResponse response =
+                new CourierCompanyResponse(
+                        company.getId(),
+                        company.getCompanyName(),
+                        company.getEmail()
+                );
 
-        courierRepo.save(courier);
-
-        return new ApiResponse<>(true, "Courier added successfully", null);
+        return new ApiResponse<>(true, "Login successful", response);
     }
 
     @Override
@@ -62,26 +56,47 @@ public class CourierCompanyServiceImpl implements CourierCompanyService {
                 .orElseThrow(() -> new RuntimeException("Delivery person not found"));
 
         courier.setDeliveryPerson(dp);
-        courier.setTrackingNumber("TRK-" + UUID.randomUUID().toString().substring(0, 8).toUpperCase());
+
+        courier.setTrackingNumber(
+                "TRK-" + UUID.randomUUID()
+                        .toString()
+                        .substring(0, 8)
+                        .toUpperCase()
+        );
+
         courier.setStatus("ASSIGNED");
 
         courierRepo.save(courier);
 
-        return new ApiResponse<>(true, "Courier assigned to delivery person", null);
+        return new ApiResponse<>(true, "Courier assigned successfully", null);
     }
 
     @Override
-    public ApiResponse<?> getDeliveryPersons(Long companyId) {
-        return new ApiResponse<>(true, "Delivery persons list",
-                deliveryRepo.findByCourierCompanyId(companyId));
+    public ApiResponse<List<DeliveryPersonResponse>> getDeliveryPersons(
+            Long loggedInCompanyId) {
+
+        List<DeliveryPersonResponse> response =
+                deliveryRepo.findByCourierCompanyId(loggedInCompanyId)
+                        .stream()
+                        .map(dp -> new DeliveryPersonResponse(
+                                dp.getId(),
+                                dp.getFirstName(),
+                                dp.getLastName(),
+                                dp.getEmail(),
+                                dp.getContact(),
+                                dp.isActive()
+                        ))
+                        .toList();
+
+        return new ApiResponse<>(true, "Delivery persons fetched", response);
     }
-    
+
     @Override
     public ApiResponse<String> addDeliveryPerson(
-            Long companyId,
-            AddDeliveryPersonDTO request) {
+            Long loggedInCompanyId,
+            CompanyAddDeliveryPersonRequest request) {
 
-        CourierCompany company = companyRepo.findById(companyId)
+        CourierCompany company = companyRepo.findById(loggedInCompanyId)
                 .orElseThrow(() -> new RuntimeException("Courier company not found"));
 
         DeliveryPerson dp = new DeliveryPerson();
@@ -95,42 +110,80 @@ public class CourierCompanyServiceImpl implements CourierCompanyService {
 
         deliveryRepo.save(dp);
 
-        return new ApiResponse<>(
-                true,
-                "Delivery person added successfully",
-                null
-        );
+        return new ApiResponse<>(true, "Delivery person added successfully", null);
     }
-    
+
     @Override
     public ApiResponse<String> deleteDeliveryPerson(
-            Long companyId,
+            Long loggedInCompanyId,
             Long deliveryPersonId) {
 
         DeliveryPerson dp = deliveryRepo.findById(deliveryPersonId)
                 .orElseThrow(() -> new RuntimeException("Delivery person not found"));
 
-        // 🔒 Ensure same company
-        if (!dp.getCourierCompany().getId().equals(companyId)) {
-            throw new RuntimeException("Unauthorized delivery person access");
+        if (!dp.getCourierCompany().getId().equals(loggedInCompanyId)) {
+            throw new RuntimeException("Unauthorized action");
         }
 
-        boolean assigned =
-                courierRepo.existsByDeliveryPersonId(deliveryPersonId);
-
+        boolean assigned = courierRepo.existsByDeliveryPersonId(deliveryPersonId);
         if (assigned) {
-            throw new RuntimeException(
-                    "Cannot delete delivery person with assigned couriers");
+            throw new RuntimeException("Cannot delete assigned delivery person");
         }
 
         deliveryRepo.delete(dp);
 
-        return new ApiResponse<>(
-                true,
-                "Delivery person deleted successfully",
-                null
-        );
+        return new ApiResponse<>(true, "Delivery person deleted", null);
     }
 
+    @Override
+    public ApiResponse<String> updateDeliveryPersonStatus(
+            Long loggedInCompanyId,
+            Long deliveryPersonId,
+            boolean active) {
 
+        DeliveryPerson dp = deliveryRepo.findById(deliveryPersonId)
+                .orElseThrow(() -> new RuntimeException("Delivery person not found"));
+
+        if (!dp.getCourierCompany().getId().equals(loggedInCompanyId)) {
+            throw new RuntimeException("Unauthorized action");
+        }
+
+        dp.setActive(active);
+        deliveryRepo.save(dp);
+
+        return new ApiResponse<>(true, "Delivery person status updated", null);
+    }
+
+    @Override
+    public ApiResponse<List<CompanyCourierResponse>> getCompanyCouriers(
+            Long loggedInCompanyId) {
+
+        List<CompanyCourierResponse> response =
+                courierRepo.findByCourierCompanyId(loggedInCompanyId)
+                        .stream()
+                        .map(c -> new CompanyCourierResponse(
+                                c.getId(),
+                                c.getTrackingNumber(),
+                                c.getCustomer().getId(),
+                                c.getCourierType(),
+                                c.getWeight(),
+                                c.getCustomer().getFirstName() + " " +
+                                        c.getCustomer().getLastName(),
+                                c.getCustomer().getContact(),
+                                c.getReceiverName(),
+                                c.getReceiverAddress(),
+                                c.getDeliveryPerson() != null
+                                        ? c.getDeliveryPerson().getFirstName() + " " +
+                                          c.getDeliveryPerson().getLastName()
+                                        : "Not Assigned",
+                                c.getDeliveryPerson() != null
+                                        ? c.getDeliveryPerson().getContact()
+                                        : "N/A",
+                                c.getStatus(),
+                                c.getDeliveryMessage()
+                        ))
+                        .toList();
+
+        return new ApiResponse<>(true, "Company couriers fetched", response);
+    }
 }

@@ -8,9 +8,10 @@ import org.springframework.stereotype.Service;
 import com.couriersphere.dto.ApiResponse;
 import com.couriersphere.dto.CustomerBookCourierRequest;
 import com.couriersphere.dto.CustomerCourierCompanyResponse;
-import com.couriersphere.dto.CustomerDTO;
+import com.couriersphere.dto.CustomerCourierResponse;
 import com.couriersphere.dto.CustomerLoginRequest;
 import com.couriersphere.dto.CustomerRegisterRequest;
+import com.couriersphere.dto.CustomerResponse;
 import com.couriersphere.entity.Courier;
 import com.couriersphere.entity.CourierCompany;
 import com.couriersphere.entity.Customer;
@@ -18,6 +19,10 @@ import com.couriersphere.repository.CourierCompanyRepository;
 import com.couriersphere.repository.CourierRepository;
 import com.couriersphere.repository.CustomerRepository;
 
+/**
+ * Service implementation for Customer operations
+ * Handles registration, login, profile management, courier booking, and courier tracking
+ */
 @Service
 public class CustomerServiceImpl implements CustomerService {
 
@@ -37,8 +42,15 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
 
+    /**
+     * Register a new customer
+     * Generates a unique customer reference ID
+     * @param request Customer registration details
+     * @return ApiResponse with customer details on success
+     * @throws RuntimeException if email already exists
+     */
     @Override
-    public ApiResponse<CustomerDTO> register(CustomerRegisterRequest request) {
+    public ApiResponse<CustomerResponse> register(CustomerRegisterRequest request) {
 
         if (customerRepository.existsByEmail(request.getEmail())) {
             throw new RuntimeException("Customer email already exists");
@@ -64,8 +76,14 @@ public class CustomerServiceImpl implements CustomerService {
         );
     }
 
+    /**
+     * Authenticate customer with email and password
+     * @param request Login request containing email and password
+     * @return ApiResponse with customer details on success
+     * @throws RuntimeException if credentials are invalid
+     */
     @Override
-    public ApiResponse<CustomerDTO> login(CustomerLoginRequest request) {
+    public ApiResponse<CustomerResponse> login(CustomerLoginRequest request) {
 
         Customer customer = customerRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new RuntimeException("Invalid credentials"));
@@ -81,8 +99,14 @@ public class CustomerServiceImpl implements CustomerService {
         );
     }
 
+    /**
+     * Get customer profile by ID
+     * @param customerId The ID of the customer
+     * @return ApiResponse with customer profile details
+     * @throws RuntimeException if customer not found
+     */
     @Override
-    public ApiResponse<CustomerDTO> getProfile(Long customerId) {
+    public ApiResponse<CustomerResponse> getProfile(Long customerId) {
 
         Customer customer = customerRepository.findById(customerId)
                 .orElseThrow(() -> new RuntimeException("Customer not found"));
@@ -94,8 +118,8 @@ public class CustomerServiceImpl implements CustomerService {
         );
     }
 
-    private CustomerDTO mapToResponse(Customer c) {
-        return new CustomerDTO(
+    private CustomerResponse mapToResponse(Customer c) {
+        return new CustomerResponse(
                 c.getId(),
                 c.getCustomerRefId(),
                 c.getFirstName(),
@@ -106,6 +130,11 @@ public class CustomerServiceImpl implements CustomerService {
         );
     }
 
+    /**
+     * Get list of all available courier companies
+     * Used by customers to select a company when booking a courier
+     * @return ApiResponse with list of courier companies
+     */
     @Override
     public ApiResponse<List<CustomerCourierCompanyResponse>> getCourierCompanies() {
 
@@ -115,7 +144,7 @@ public class CustomerServiceImpl implements CustomerService {
                 companies.stream()
                         .map(c -> new CustomerCourierCompanyResponse(
                                 c.getId(),
-                                c.getFullName(), 
+                                c.getCompanyName(),
                                 c.getCity(),
                                 c.getState(),
                                 c.getCountry(),
@@ -130,6 +159,15 @@ public class CustomerServiceImpl implements CustomerService {
         );
     }
     
+    /**
+     * Book a new courier for the customer
+     * Creates a courier with status BOOKED and awaits company assignment
+     * Tracking number is generated later when company assigns a delivery person
+     * @param customerId The ID of the customer booking the courier
+     * @param request Courier booking details (companyId, courierType, weight, receiver details)
+     * @return ApiResponse with success message
+     * @throws RuntimeException if customer or company not found
+     */
     @Override
     public ApiResponse<String> bookCourier(
             Long customerId,
@@ -163,5 +201,43 @@ public class CustomerServiceImpl implements CustomerService {
         );
     }
 
+    /**
+     * Get all couriers for a specific customer
+     * Returns courier details including tracking number, status, and delivery person info
+     */
+    @Override
+    public ApiResponse<List<CustomerCourierResponse>> getCustomerCouriers(Long customerId) {
+
+        Customer customer = customerRepository.findById(customerId)
+                .orElseThrow(() -> new RuntimeException("Customer not found"));
+
+        List<Courier> couriers = courierRepository.findByCustomerId(customerId);
+
+        List<CustomerCourierResponse> response = couriers.stream()
+                .map(c -> new CustomerCourierResponse(
+                        c.getId(),
+                        c.getTrackingNumber() != null ? c.getTrackingNumber() : "Pending",
+                        c.getCourierType(),
+                        c.getWeight(),
+                        c.getReceiverName(),
+                        c.getReceiverAddress(),
+                        c.getCourierCompany() != null
+                                ? c.getCourierCompany().getCompanyName()
+                                : "Not Assigned",
+                        c.getDeliveryPerson() != null
+                                ? c.getDeliveryPerson().getFirstName() + " " + c.getDeliveryPerson().getLastName()
+                                : "Not Assigned",
+                        c.getDeliveryPerson() != null ? c.getDeliveryPerson().getContact() : "N/A",
+                        c.getStatus(),
+                        c.getDeliveryMessage()
+                ))
+                .toList();
+
+        return new ApiResponse<>(
+                true,
+                "Customer couriers fetched successfully",
+                response
+        );
+    }
 
 }

@@ -13,9 +13,10 @@ import org.springframework.web.bind.annotation.RestController;
 import com.couriersphere.dto.ApiResponse;
 import com.couriersphere.dto.CustomerBookCourierRequest;
 import com.couriersphere.dto.CustomerCourierCompanyResponse;
-import com.couriersphere.dto.CustomerDTO;
+import com.couriersphere.dto.CustomerCourierResponse;
 import com.couriersphere.dto.CustomerLoginRequest;
 import com.couriersphere.dto.CustomerRegisterRequest;
+import com.couriersphere.dto.CustomerResponse;
 import com.couriersphere.service.CustomerService;
 
 import jakarta.validation.Valid;
@@ -32,19 +33,19 @@ public class CustomerController {
     }
 
     @PostMapping("/register")
-    public ApiResponse<CustomerDTO> register(
+    public ApiResponse<CustomerResponse> register(
             @Valid @RequestBody CustomerRegisterRequest request) {
         return customerService.register(request);
     }
 
     @PostMapping("/login")
-    public ApiResponse<CustomerDTO> login(
+    public ApiResponse<CustomerResponse> login(
             @Valid @RequestBody CustomerLoginRequest request) {
         return customerService.login(request);
     }
 
     @GetMapping("/profile/{id}")
-    public ApiResponse<CustomerDTO> profile(@PathVariable Long id) {
+    public ApiResponse<CustomerResponse> profile(@PathVariable Long id) {
         return customerService.getProfile(id);
     }
     @GetMapping("/courier-companies")
@@ -59,5 +60,14 @@ public class CustomerController {
         return customerService.bookCourier(customerId, request);
     }
 
+    /**
+     * Get all couriers for a specific customer
+     * Returns list of couriers with tracking information and delivery status
+     */
+    @GetMapping("/{customerId}/couriers")
+    public ApiResponse<List<CustomerCourierResponse>> getCustomerCouriers(
+            @PathVariable Long customerId) {
+        return customerService.getCustomerCouriers(customerId);
+    }
 
 }
