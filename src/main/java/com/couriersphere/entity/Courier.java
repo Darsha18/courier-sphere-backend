@@ -34,7 +34,31 @@ public class Courier {
 
     private String senderName;
     private String receiverName;
-    private String receiverAddress;
+    public String getDeliveryMessage() {
+		return deliveryMessage;
+	}
+
+	public void setDeliveryMessage(String deliveryMessage) {
+		this.deliveryMessage = deliveryMessage;
+	}
+
+	public LocalDate getDeliveryDate() {
+		return deliveryDate;
+	}
+
+	public void setDeliveryDate(LocalDate deliveryDate) {
+		this.deliveryDate = deliveryDate;
+	}
+
+	public LocalTime getDeliveryTime() {
+		return deliveryTime;
+	}
+
+	public void setDeliveryTime(LocalTime deliveryTime) {
+		this.deliveryTime = deliveryTime;
+	}
+
+	private String receiverAddress;
 
     private String status;
 

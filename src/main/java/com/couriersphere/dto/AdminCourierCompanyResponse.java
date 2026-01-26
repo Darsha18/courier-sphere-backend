@@ -8,8 +8,7 @@ import lombok.Setter;
 public class AdminCourierCompanyResponse {
 
     private Long id;
-    private String firstName;
-    private String lastName;
+    private String companyName;
     private String email;
     private String contact;
     private String street;
@@ -21,8 +20,7 @@ public class AdminCourierCompanyResponse {
 
     public AdminCourierCompanyResponse(
             Long id,
-            String firstName,
-            String lastName,
+            String companyName,
             String email,
             String contact,
             String street,
@@ -33,8 +31,7 @@ public class AdminCourierCompanyResponse {
             String country) {
 
         this.id = id;
-        this.firstName = firstName;
-        this.lastName = lastName;
+        this.companyName = companyName;
         this.email = email;
         this.contact = contact;
         this.street = street;
@@ -49,12 +46,8 @@ public class AdminCourierCompanyResponse {
         return id;
     }
 
-    public String getFirstName() {
-        return firstName;
-    }
-
-    public String getLastName() {
-        return lastName;
+    public String getCompanyName() {
+        return companyName;
     }
 
     public String getEmail() {

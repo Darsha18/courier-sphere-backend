@@ -19,6 +19,11 @@ public class AdminController {
         this.adminService = adminService;
     }
 
+    @GetMapping("/customers")
+    public ApiResponse<List<AdminCustomerResponse>> getAllCustomers() {
+        return adminService.getAllCustomers();
+    }
+
     @PostMapping("/register")
     public ApiResponse<AdminResponse> registerAdmin(
             @Valid @RequestBody AdminRegisterRequest request) {

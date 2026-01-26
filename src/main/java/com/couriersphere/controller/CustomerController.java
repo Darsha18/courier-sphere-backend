@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.couriersphere.dto.ApiResponse;
 import com.couriersphere.dto.CustomerBookCourierRequest;
 import com.couriersphere.dto.CustomerCourierCompanyResponse;
+import com.couriersphere.dto.CustomerCourierResponse;
 import com.couriersphere.dto.CustomerLoginRequest;
 import com.couriersphere.dto.CustomerRegisterRequest;
 import com.couriersphere.dto.CustomerResponse;
@@ -59,5 +60,14 @@ public class CustomerController {
         return customerService.bookCourier(customerId, request);
     }
 
+    /**
+     * Get all couriers for a specific customer
+     * Returns list of couriers with tracking information and delivery status
+     */
+    @GetMapping("/{customerId}/couriers")
+    public ApiResponse<List<CustomerCourierResponse>> getCustomerCouriers(
+            @PathVariable Long customerId) {
+        return customerService.getCustomerCouriers(customerId);
+    }
 
 }

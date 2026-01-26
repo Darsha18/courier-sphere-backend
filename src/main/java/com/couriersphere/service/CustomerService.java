@@ -18,5 +18,7 @@ public interface CustomerService {
             Long customerId,
             CustomerBookCourierRequest request);
 
+    // Get all couriers for a specific customer
+    ApiResponse<List<CustomerCourierResponse>> getCustomerCouriers(Long customerId);
 
 }

@@ -5,6 +5,7 @@ import java.util.List;
 import com.couriersphere.dto.AdminAddCourierCompanyRequest;
 import com.couriersphere.dto.AdminCourierCompanyResponse;
 import com.couriersphere.dto.AdminCourierResponse;
+import com.couriersphere.dto.AdminCustomerResponse;
 import com.couriersphere.dto.AdminDeliveryPersonResponse;
 import com.couriersphere.dto.AdminRegisterRequest;
 import com.couriersphere.dto.AdminResponse;
@@ -28,6 +29,7 @@ public interface AdminService {
 
     ApiResponse<String> deleteCourierCompany(Long companyId);
 
+    ApiResponse<List<AdminCustomerResponse>> getAllCustomers();
 
 
 }
