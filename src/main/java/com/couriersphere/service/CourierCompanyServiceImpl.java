@@ -1,13 +1,26 @@
 package com.couriersphere.service;
 
-import com.couriersphere.dto.*;
-import com.couriersphere.entity.*;
-import com.couriersphere.repository.*;
-import org.springframework.stereotype.Service;
-
 import java.util.UUID;
 
+import org.springframework.stereotype.Service;
+
+import com.couriersphere.dto.AddCourierDTO;
+import com.couriersphere.dto.AddDeliveryPersonDTO;
+import com.couriersphere.dto.ApiResponse;
+import com.couriersphere.dto.AssignDeliveryRequest;
+import com.couriersphere.entity.Courier;
+import com.couriersphere.entity.CourierCompany;
+import com.couriersphere.entity.Customer;
+import com.couriersphere.entity.DeliveryPerson;
+import com.couriersphere.repository.CourierCompanyRepository;
+import com.couriersphere.repository.CourierRepository;
+import com.couriersphere.repository.CustomerRepository;
+import com.couriersphere.repository.DeliveryPersonRepository;
+
+import lombok.AllArgsConstructor;
+
 @Service
+@AllArgsConstructor
 public class CourierCompanyServiceImpl implements CourierCompanyService {
 
     private final CourierCompanyRepository companyRepo;
@@ -15,39 +28,9 @@ public class CourierCompanyServiceImpl implements CourierCompanyService {
     private final CustomerRepository customerRepo;
     private final CourierRepository courierRepo;
 
-    public CourierCompanyServiceImpl(
-            CourierCompanyRepository companyRepo,
-            DeliveryPersonRepository deliveryRepo,
-            CustomerRepository customerRepo,
-            CourierRepository courierRepo) {
-
-        this.companyRepo = companyRepo;
-        this.deliveryRepo = deliveryRepo;
-        this.customerRepo = customerRepo;
-        this.courierRepo = courierRepo;
-    }
-
+    
     @Override
-    public ApiResponse<?> registerDeliveryPerson(Long companyId, DeliveryPersonRegisterRequest request) {
-
-        CourierCompany company = companyRepo.findById(companyId)
-                .orElseThrow(() -> new RuntimeException("Courier company not found"));
-
-        DeliveryPerson dp = new DeliveryPerson();
-        dp.setFirstName(request.getFirstName());
-        dp.setLastName(request.getLastName());
-        dp.setEmail(request.getEmail());
-        dp.setPassword(request.getPassword());
-        dp.setContact(request.getContact());
-        dp.setCourierCompany(company);
-
-        deliveryRepo.save(dp);
-
-        return new ApiResponse<>(true, "Delivery person registered", null);
-    }
-
-    @Override
-    public ApiResponse<?> addCustomerCourier(Long companyId, AddCourierRequest request) {
+    public ApiResponse<?> addCustomerCourier(Long companyId, AddCourierDTO request) {
 
         CourierCompany company = companyRepo.findById(companyId)
                 .orElseThrow(() -> new RuntimeException("Courier company not found"));
@@ -96,7 +79,7 @@ public class CourierCompanyServiceImpl implements CourierCompanyService {
     @Override
     public ApiResponse<String> addDeliveryPerson(
             Long companyId,
-            CompanyAddDeliveryPersonRequest request) {
+            AddDeliveryPersonDTO request) {
 
         CourierCompany company = companyRepo.findById(companyId)
                 .orElseThrow(() -> new RuntimeException("Courier company not found"));

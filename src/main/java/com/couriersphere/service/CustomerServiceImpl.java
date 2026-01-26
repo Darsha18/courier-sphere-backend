@@ -8,9 +8,9 @@ import org.springframework.stereotype.Service;
 import com.couriersphere.dto.ApiResponse;
 import com.couriersphere.dto.CustomerBookCourierRequest;
 import com.couriersphere.dto.CustomerCourierCompanyResponse;
+import com.couriersphere.dto.CustomerDTO;
 import com.couriersphere.dto.CustomerLoginRequest;
 import com.couriersphere.dto.CustomerRegisterRequest;
-import com.couriersphere.dto.CustomerResponse;
 import com.couriersphere.entity.Courier;
 import com.couriersphere.entity.CourierCompany;
 import com.couriersphere.entity.Customer;
@@ -38,7 +38,7 @@ public class CustomerServiceImpl implements CustomerService {
 
 
     @Override
-    public ApiResponse<CustomerResponse> register(CustomerRegisterRequest request) {
+    public ApiResponse<CustomerDTO> register(CustomerRegisterRequest request) {
 
         if (customerRepository.existsByEmail(request.getEmail())) {
             throw new RuntimeException("Customer email already exists");
@@ -65,7 +65,7 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
-    public ApiResponse<CustomerResponse> login(CustomerLoginRequest request) {
+    public ApiResponse<CustomerDTO> login(CustomerLoginRequest request) {
 
         Customer customer = customerRepository.findByEmail(request.getEmail())
                 .orElseThrow(() -> new RuntimeException("Invalid credentials"));
@@ -82,7 +82,7 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
-    public ApiResponse<CustomerResponse> getProfile(Long customerId) {
+    public ApiResponse<CustomerDTO> getProfile(Long customerId) {
 
         Customer customer = customerRepository.findById(customerId)
                 .orElseThrow(() -> new RuntimeException("Customer not found"));
@@ -94,8 +94,8 @@ public class CustomerServiceImpl implements CustomerService {
         );
     }
 
-    private CustomerResponse mapToResponse(Customer c) {
-        return new CustomerResponse(
+    private CustomerDTO mapToResponse(Customer c) {
+        return new CustomerDTO(
                 c.getId(),
                 c.getCustomerRefId(),
                 c.getFirstName(),
@@ -115,7 +115,7 @@ public class CustomerServiceImpl implements CustomerService {
                 companies.stream()
                         .map(c -> new CustomerCourierCompanyResponse(
                                 c.getId(),
-                                c.getFirstName() + " " + c.getLastName(),
+                                c.getFullName(), 
                                 c.getCity(),
                                 c.getState(),
                                 c.getCountry(),

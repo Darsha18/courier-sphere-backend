@@ -1,18 +1,16 @@
 package com.couriersphere.dto;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.AllArgsConstructor;
+import lombok.Data;
 
-@Getter
-@Setter
-public class AdminAddCourierCompanyRequest {
+@Data
+@AllArgsConstructor
+public class CourierCompanyDTO {
 
-    private String firstName;
-    private String lastName;
+    private Long id;
+    private String fullName;
     private String email;
-    private String password;
     private String contact;
-
     private String street;
     private String landmark;
     private String city;
@@ -20,5 +18,5 @@ public class AdminAddCourierCompanyRequest {
     private String state;
     private String country;
 
-    // getters & setters
+    
 }

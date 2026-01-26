@@ -13,9 +13,9 @@ import org.springframework.web.bind.annotation.RestController;
 import com.couriersphere.dto.ApiResponse;
 import com.couriersphere.dto.CustomerBookCourierRequest;
 import com.couriersphere.dto.CustomerCourierCompanyResponse;
+import com.couriersphere.dto.CustomerDTO;
 import com.couriersphere.dto.CustomerLoginRequest;
 import com.couriersphere.dto.CustomerRegisterRequest;
-import com.couriersphere.dto.CustomerResponse;
 import com.couriersphere.service.CustomerService;
 
 import jakarta.validation.Valid;
@@ -32,19 +32,19 @@ public class CustomerController {
     }
 
     @PostMapping("/register")
-    public ApiResponse<CustomerResponse> register(
+    public ApiResponse<CustomerDTO> register(
             @Valid @RequestBody CustomerRegisterRequest request) {
         return customerService.register(request);
     }
 
     @PostMapping("/login")
-    public ApiResponse<CustomerResponse> login(
+    public ApiResponse<CustomerDTO> login(
             @Valid @RequestBody CustomerLoginRequest request) {
         return customerService.login(request);
     }
 
     @GetMapping("/profile/{id}")
-    public ApiResponse<CustomerResponse> profile(@PathVariable Long id) {
+    public ApiResponse<CustomerDTO> profile(@PathVariable Long id) {
         return customerService.getProfile(id);
     }
     @GetMapping("/courier-companies")

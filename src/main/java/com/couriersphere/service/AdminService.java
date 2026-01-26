@@ -2,13 +2,13 @@ package com.couriersphere.service;
 
 import java.util.List;
 
-import com.couriersphere.dto.AdminAddCourierCompanyRequest;
-import com.couriersphere.dto.AdminCourierCompanyResponse;
+import com.couriersphere.dto.AddCourierCompanyRequest;
 import com.couriersphere.dto.AdminCourierResponse;
-import com.couriersphere.dto.AdminDeliveryPersonResponse;
 import com.couriersphere.dto.AdminRegisterRequest;
 import com.couriersphere.dto.AdminResponse;
 import com.couriersphere.dto.ApiResponse;
+import com.couriersphere.dto.CourierCompanyDTO;
+import com.couriersphere.dto.DeliveryPersonDTO;
 import com.couriersphere.dto.LoginRequest;
 
 public interface AdminService {
@@ -18,13 +18,13 @@ public interface AdminService {
     ApiResponse<AdminResponse> login(LoginRequest request);
 
    
-    ApiResponse<List<AdminCourierCompanyResponse>> getAllCourierCompanies();
+    ApiResponse<List<CourierCompanyDTO>> getAllCourierCompanies();
     
-    ApiResponse<List<AdminDeliveryPersonResponse>> getAllDeliveryPersons();
+    ApiResponse<List<DeliveryPersonDTO>> getAllDeliveryPersons();
     
     ApiResponse<List<AdminCourierResponse>> getAllCouriers();
     
-    ApiResponse<String> addCourierCompany(AdminAddCourierCompanyRequest request);
+    ApiResponse<String> addCourierCompany(AddCourierCompanyRequest request);
 
     ApiResponse<String> deleteCourierCompany(Long companyId);
 

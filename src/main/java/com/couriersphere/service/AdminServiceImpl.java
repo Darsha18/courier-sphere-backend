@@ -5,13 +5,13 @@ import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
-import com.couriersphere.dto.AdminAddCourierCompanyRequest;
-import com.couriersphere.dto.AdminCourierCompanyResponse;
+import com.couriersphere.dto.AddCourierCompanyRequest;
 import com.couriersphere.dto.AdminCourierResponse;
-import com.couriersphere.dto.AdminDeliveryPersonResponse;
 import com.couriersphere.dto.AdminRegisterRequest;
 import com.couriersphere.dto.AdminResponse;
 import com.couriersphere.dto.ApiResponse;
+import com.couriersphere.dto.CourierCompanyDTO;
+import com.couriersphere.dto.DeliveryPersonDTO;
 import com.couriersphere.dto.LoginRequest;
 import com.couriersphere.entity.Admin;
 import com.couriersphere.entity.Courier;
@@ -22,10 +22,13 @@ import com.couriersphere.repository.CourierCompanyRepository;
 import com.couriersphere.repository.CourierRepository;
 import com.couriersphere.repository.DeliveryPersonRepository;
 
+import lombok.AllArgsConstructor;
+
 
 
 
 @Service
+@AllArgsConstructor
 public class AdminServiceImpl implements AdminService {
 
     private final AdminRepository adminRepository;
@@ -34,20 +37,6 @@ public class AdminServiceImpl implements AdminService {
     private final CourierRepository courierRepository;
     //private final CourierRepository courierRepository;
 
-
-
-
-    public AdminServiceImpl(
-            AdminRepository adminRepository,
-            CourierCompanyRepository courierCompanyRepository,
-            DeliveryPersonRepository deliveryPersonRepository,
-            CourierRepository courierRepository) {
-
-        this.adminRepository = adminRepository;
-        this.courierCompanyRepository = courierCompanyRepository;
-        this.deliveryPersonRepository = deliveryPersonRepository;
-        this.courierRepository = courierRepository;
-    }
 
 
 
@@ -87,16 +76,15 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
-    public ApiResponse<List<AdminCourierCompanyResponse>> getAllCourierCompanies() {
+    public ApiResponse<List<CourierCompanyDTO>> getAllCourierCompanies() {
 
         List<CourierCompany> companies = courierCompanyRepository.findAll();
 
-        List<AdminCourierCompanyResponse> response =
+        List<CourierCompanyDTO> response =
                 companies.stream()
-                        .map(c -> new AdminCourierCompanyResponse(
+                        .map(c -> new CourierCompanyDTO(
                                 c.getId(),
-                                c.getFirstName(),
-                                c.getLastName(),
+                                c.getFullName(),
                                 c.getEmail(),
                                 c.getContact(),
                                 c.getStreet(),
@@ -117,13 +105,13 @@ public class AdminServiceImpl implements AdminService {
 
 	
     @Override
-    public ApiResponse<List<AdminDeliveryPersonResponse>> getAllDeliveryPersons() {
+    public ApiResponse<List<DeliveryPersonDTO>> getAllDeliveryPersons() {
 
         List<DeliveryPerson> persons = deliveryPersonRepository.findAll();
 
-        List<AdminDeliveryPersonResponse> response =
+        List<DeliveryPersonDTO> response =
                 persons.stream()
-                        .map(p -> new AdminDeliveryPersonResponse(
+                        .map(p -> new DeliveryPersonDTO(
                                 p.getId(),
                                 p.getFirstName(),
                                 p.getLastName(),
@@ -131,8 +119,7 @@ public class AdminServiceImpl implements AdminService {
                                 p.getContact(),
                                 p.isActive(),
                                 p.getCourierCompany() != null
-                                        ? p.getCourierCompany().getFirstName()
-                                          + " " + p.getCourierCompany().getLastName()
+                                        ? p.getCourierCompany().getFullName()
                                         : "N/A"
                         ))
                         .toList(); // Java 21 OK
@@ -156,8 +143,7 @@ public class AdminServiceImpl implements AdminService {
                                 c.getId(),
                                 c.getTrackingNumber(),
                                 c.getCourierCompany() != null
-                                        ? c.getCourierCompany().getFirstName() + " " +
-                                          c.getCourierCompany().getLastName()
+                                        ? c.getCourierCompany().getFullName() 
                                         : "N/A",
                                 c.getCustomer() != null
                                         ? c.getCustomer().getFirstName() + " " +
@@ -190,15 +176,14 @@ public class AdminServiceImpl implements AdminService {
 
 
     @Override
-    public ApiResponse<String> addCourierCompany(AdminAddCourierCompanyRequest request) {
+    public ApiResponse<String> addCourierCompany(AddCourierCompanyRequest request) {
 
         if (courierCompanyRepository.findByEmail(request.getEmail()).isPresent()) {
             throw new RuntimeException("Courier company email already exists");
         }
 
         CourierCompany company = new CourierCompany();
-        company.setFirstName(request.getFirstName());
-        company.setLastName(request.getLastName());
+        company.setFullName(request.getFullName());
         company.setEmail(request.getEmail());
         company.setPassword(request.getPassword());
         company.setContact(request.getContact());
@@ -243,6 +228,8 @@ public class AdminServiceImpl implements AdminService {
                 null
         );
     }
+
+	
 
 
 

@@ -6,11 +6,11 @@ import com.couriersphere.dto.*;
 
 public interface CustomerService {
 
-    ApiResponse<CustomerResponse> register(CustomerRegisterRequest request);
+    ApiResponse<CustomerDTO> register(CustomerRegisterRequest request);
 
-    ApiResponse<CustomerResponse> login(CustomerLoginRequest request);
+    ApiResponse<CustomerDTO> login(CustomerLoginRequest request);
 
-    ApiResponse<CustomerResponse> getProfile(Long customerId);
+    ApiResponse<CustomerDTO> getProfile(Long customerId);
     
     ApiResponse<List<CustomerCourierCompanyResponse>> getCourierCompanies();
     

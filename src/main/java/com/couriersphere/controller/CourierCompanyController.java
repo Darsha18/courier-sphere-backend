@@ -15,17 +15,10 @@ public class CourierCompanyController {
         this.service = service;
     }
 
-    @PostMapping("/{companyId}/register-delivery")
-    public ApiResponse<?> registerDelivery(
-            @PathVariable Long companyId,
-            @RequestBody DeliveryPersonRegisterRequest request) {
-        return service.registerDeliveryPerson(companyId, request);
-    }
-
     @PostMapping("/{companyId}/add-courier")
     public ApiResponse<?> addCourier(
             @PathVariable Long companyId,
-            @RequestBody AddCourierRequest request) {
+            @RequestBody AddCourierDTO request) {
         return service.addCustomerCourier(companyId, request);
     }
 
@@ -42,7 +35,7 @@ public class CourierCompanyController {
     @PostMapping("/{companyId}/delivery-person")
     public ApiResponse<String> addDeliveryPerson(
             @PathVariable Long companyId,
-            @RequestBody CompanyAddDeliveryPersonRequest request) {
+            @RequestBody AddDeliveryPersonDTO request) {
 
         return service.addDeliveryPerson(companyId, request);
     }
