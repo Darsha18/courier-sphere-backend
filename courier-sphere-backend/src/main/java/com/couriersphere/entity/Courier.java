@@ -38,16 +38,12 @@ public class Courier {
     @Column(unique = true)
     private String trackingNumber;
 
-    private String courierName;
     @Enumerated(EnumType.STRING)
     private CourierCategory courierCategory;
     
     private double weight;
-    private String senderName;
     private String receiverName;
 	private String receiverAddress;
-	private String receiverContact;
-	private String receiverPincode;
 	
 	@Enumerated(EnumType.STRING)
     private CourierStatus status;
@@ -79,9 +75,4 @@ public class Courier {
         status = CourierStatus.BOOKED;
     }
 
-    public String getCourierType() {
-        return courierCategory != null ? courierCategory.toString() : null;
-    }
-
-    
 }

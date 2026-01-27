@@ -208,8 +208,6 @@ public class CustomerServiceImpl implements CustomerService {
 			courier.setWeight(request.getWeight());
 			courier.setReceiverName(request.getReceiverName());
 			courier.setReceiverAddress(request.getReceiverAddress());
-			courier.setReceiverContact(request.getReceiverContact());
-			courier.setReceiverPincode(request.getReceiverPincode());
 
 			// Payment Fields
 			courier.setAmount(amount);

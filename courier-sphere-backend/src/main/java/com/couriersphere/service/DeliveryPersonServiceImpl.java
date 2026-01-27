@@ -67,7 +67,7 @@ public class DeliveryPersonServiceImpl implements DeliveryPersonService {
                         .map(c -> new DeliveryPersonCourierResponse(
                                 c.getId(),
                                 c.getTrackingNumber(),
-                                c.getCourierType(),
+                                c.getCourierCategory() != null ? c.getCourierCategory().toString() : "N/A",
                                 c.getWeight(),
                                 c.getReceiverName(),
                                 c.getReceiverAddress(),

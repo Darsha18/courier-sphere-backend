@@ -156,7 +156,7 @@ public class AdminServiceImpl implements AdminService {
                                 c.getCustomer() != null
                                         ? c.getCustomer().getCustomerRefId()
                                         : "N/A",
-                                c.getCourierType(),
+                                c.getCourierCategory() != null ? c.getCourierCategory().toString() : "N/A",
                                 c.getWeight(),
                                 c.getReceiverName(),
                                 c.getReceiverAddress(),

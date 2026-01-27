@@ -166,7 +166,7 @@ public class CourierCompanyServiceImpl implements CourierCompanyService {
                                 c.getId(),
                                 c.getTrackingNumber(),
                                 c.getCustomer().getId(),
-                                c.getCourierType(),
+                                c.getCourierCategory() != null ? c.getCourierCategory().toString() : "N/A",
                                 c.getWeight(),
                                 c.getCustomer().getFirstName() + " " +
                                         c.getCustomer().getLastName(),
