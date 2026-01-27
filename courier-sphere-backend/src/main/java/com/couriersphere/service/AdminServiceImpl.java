@@ -167,7 +167,7 @@ public class AdminServiceImpl implements AdminService {
                                 c.getDeliveryPerson() != null
                                         ? c.getDeliveryPerson().getContact()
                                         : "N/A",
-                                c.getStatus()
+                                c.getStatus() != null ? c.getStatus().toString() : "N/A"
                         ))
                         .toList();
 

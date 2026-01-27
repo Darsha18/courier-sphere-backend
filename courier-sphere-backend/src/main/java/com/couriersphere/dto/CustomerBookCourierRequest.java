@@ -14,6 +14,8 @@ public class CustomerBookCourierRequest {
 
     private String receiverName;
     private String receiverAddress;
+    private String receiverContact;
+    private String receiverPincode;
 	public Long getCourierCompanyId() {
 		return courierCompanyId;
 	}
@@ -43,6 +45,18 @@ public class CustomerBookCourierRequest {
 	}
 	public void setReceiverAddress(String receiverAddress) {
 		this.receiverAddress = receiverAddress;
+	}
+	public String getReceiverContact() {
+		return receiverContact;
+	}
+	public void setReceiverContact(String receiverContact) {
+		this.receiverContact = receiverContact;
+	}
+	public String getReceiverPincode() {
+		return receiverPincode;
+	}
+	public void setReceiverPincode(String receiverPincode) {
+		this.receiverPincode = receiverPincode;
 	}
 
     // getters & setters

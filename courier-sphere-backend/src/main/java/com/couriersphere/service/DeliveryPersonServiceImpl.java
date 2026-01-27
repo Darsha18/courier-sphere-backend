@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import com.couriersphere.dto.*;
 import com.couriersphere.entity.Courier;
 import com.couriersphere.entity.DeliveryPerson;
+import com.couriersphere.enums.CourierStatus;
 import com.couriersphere.repository.CourierRepository;
 import com.couriersphere.repository.DeliveryPersonRepository;
 
@@ -70,7 +71,7 @@ public class DeliveryPersonServiceImpl implements DeliveryPersonService {
                                 c.getWeight(),
                                 c.getReceiverName(),
                                 c.getReceiverAddress(),
-                                c.getStatus()
+                                c.getStatus() != null ? c.getStatus().toString() : "N/A"
                         ))
                         .toList();
 
@@ -98,7 +99,7 @@ public class DeliveryPersonServiceImpl implements DeliveryPersonService {
         }
 
         // ✅ Update allowed fields
-        courier.setStatus(CourierStatus.valueOf(request.getStatus()));
+        courier.setStatus(request.getStatus());
         courier.setDeliveryMessage(request.getDeliveryMessage());
 
         // ⏱ System-generated delivery date & time

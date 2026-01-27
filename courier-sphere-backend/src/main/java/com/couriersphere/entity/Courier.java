@@ -46,6 +46,8 @@ public class Courier {
     private String senderName;
     private String receiverName;
 	private String receiverAddress;
+	private String receiverContact;
+	private String receiverPincode;
 	
 	@Enumerated(EnumType.STRING)
     private CourierStatus status;
@@ -75,6 +77,10 @@ public class Courier {
     void onCreate() {
         courierDate = LocalDate.now();
         status = CourierStatus.BOOKED;
+    }
+
+    public String getCourierType() {
+        return courierCategory != null ? courierCategory.toString() : null;
     }
 
     
