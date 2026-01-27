@@ -1,10 +1,11 @@
 package com.couriersphere.repository;
 
-import com.couriersphere.entity.Courier;
-
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+
+import com.couriersphere.entity.Courier;
 
 public interface CourierRepository extends JpaRepository<Courier, Long> {
 	
@@ -18,5 +19,6 @@ public interface CourierRepository extends JpaRepository<Courier, Long> {
 
 	// Find all couriers for a specific customer
 	List<Courier> findByCustomerId(Long customerId);
-
+	
+	Optional<Courier> findByRazorpayOrderId(String razorpayOrderId);
 }

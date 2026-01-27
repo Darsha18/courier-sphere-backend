@@ -10,7 +10,7 @@ import {
 } from '../api/authApi'
 
 const Login = () => {
-  const [role, setRole] = useState('ADMIN')
+  const [role, setRole] = useState('CUSTOMER')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')

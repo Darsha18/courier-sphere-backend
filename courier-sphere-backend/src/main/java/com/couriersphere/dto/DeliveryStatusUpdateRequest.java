@@ -1,15 +1,17 @@
 package com.couriersphere.dto;
 
+import com.couriersphere.enums.CourierStatus;
+
 public class DeliveryStatusUpdateRequest {
 
-    private String status;           // PICKED_UP, IN_PROCESS, OUT_FOR_DELIVERY, DELIVERED
+    private CourierStatus status;
     private String deliveryMessage;
 
-    public String getStatus() {
+    public CourierStatus getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(CourierStatus status) {
         this.status = status;
     }
 

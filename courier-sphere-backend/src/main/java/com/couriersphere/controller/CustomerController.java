@@ -2,12 +2,14 @@ package com.couriersphere.controller;
 
 import java.util.List;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.couriersphere.dto.ApiResponse;
@@ -68,6 +70,18 @@ public class CustomerController {
     public ApiResponse<List<CustomerCourierResponse>> getCustomerCouriers(
             @PathVariable Long customerId) {
         return customerService.getCustomerCouriers(customerId);
+    }
+    
+ // courierSphere/courier-sphere-backend/src/main/java/com/couriersphere/controller/CustomerController.java
+
+    @PostMapping("/verify-payment")
+    public ResponseEntity<ApiResponse<String>> verifyPayment(
+            @RequestParam String orderId,
+            @RequestParam String paymentId,
+            @RequestParam String signature) {
+        
+        ApiResponse<String> response = customerService.verifyPayment(orderId, paymentId, signature);
+        return ResponseEntity.ok(response);
     }
 
 }

@@ -21,4 +21,6 @@ public interface CustomerService {
     // Get all couriers for a specific customer
     ApiResponse<List<CustomerCourierResponse>> getCustomerCouriers(Long customerId);
 
+	ApiResponse<String> verifyPayment(String orderId, String paymentId, String signature);
+
 }

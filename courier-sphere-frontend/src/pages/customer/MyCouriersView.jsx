@@ -14,9 +14,6 @@ const MyCouriersView = () => {
     }
   }, [user])
 
-  /**
-   * Fetch all couriers for the logged-in customer
-   */
   const fetchCouriers = async () => {
     try {
       setLoading(true)
@@ -50,83 +47,46 @@ const MyCouriersView = () => {
           <table className="min-w-full divide-y divide-gray-200">
             <thead className="bg-gray-50">
               <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Tracking #
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Type
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Weight
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Receiver
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Company
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Delivery Person
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Status
-                </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                  Message
-                </th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Tracking #</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Details</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Receiver</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Amount</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Payment</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
               {couriers.length === 0 ? (
                 <tr>
-                  <td colSpan="8" className="px-6 py-4 text-center text-gray-500">
-                    No couriers found
-                  </td>
+                  <td colSpan="6" className="px-6 py-4 text-center text-gray-500">No couriers found</td>
                 </tr>
               ) : (
                 couriers.map((courier) => (
-                  <tr key={courier.courierId}>
+                  <tr key={courier.id}>
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                      {courier.trackingNumber}
+                      {courier.trackingNumber || 'Pending'}
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      {courier.courierType}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      {courier.weight} kg
+                    <td className="px-6 py-4 text-sm text-gray-500">
+                      {courier.courierType} <br/>
+                      <span className="text-xs text-gray-400">{courier.weight} kg</span>
                     </td>
                     <td className="px-6 py-4 text-sm text-gray-500">
                       {courier.receiverName}
-                      <br />
-                      <span className="text-xs text-gray-400">{courier.receiverAddress}</span>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      {courier.courierCompanyName || 'Not Assigned'}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      {courier.deliveryPersonName || 'Not Assigned'}
-                      {courier.deliveryPersonContact && (
-                        <>
-                          <br />
-                          <span className="text-xs text-gray-400">{courier.deliveryPersonContact}</span>
-                        </>
-                      )}
+                    <td className="px-6 py-4 text-sm font-semibold text-gray-900">
+                      ₹{courier.amount || '0.00'}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <span
-                        className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                          courier.status === 'DELIVERED'
-                            ? 'bg-green-100 text-green-800'
-                            : courier.status === 'IN_PROGRESS' || courier.status === 'PICKED_UP'
-                            ? 'bg-yellow-100 text-yellow-800'
-                            : 'bg-gray-100 text-gray-800'
-                        }`}
-                      >
-                        {courier.status}
+                      <span className={`px-2 py-1 text-xs font-bold rounded-md ${
+                        courier.paymentStatus === 'SUCCESS' ? 'bg-green-100 text-green-700' : 'bg-orange-100 text-orange-700'
+                      }`}>
+                        {courier.paymentStatus}
                       </span>
                     </td>
-                    <td className="px-6 py-4 text-sm text-gray-500">
-                      {courier.deliveryMessage || '-'}
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <span className="px-2 py-1 text-xs font-semibold bg-blue-100 text-blue-800 rounded-full">
+                        {courier.status}
+                      </span>
                     </td>
                   </tr>
                 ))

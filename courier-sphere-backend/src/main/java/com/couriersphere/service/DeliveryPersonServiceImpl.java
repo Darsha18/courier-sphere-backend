@@ -98,7 +98,7 @@ public class DeliveryPersonServiceImpl implements DeliveryPersonService {
         }
 
         // ✅ Update allowed fields
-        courier.setStatus(request.getStatus());
+        courier.setStatus(CourierStatus.valueOf(request.getStatus()));
         courier.setDeliveryMessage(request.getDeliveryMessage());
 
         // ⏱ System-generated delivery date & time

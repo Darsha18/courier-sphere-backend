@@ -35,3 +35,16 @@ export const registerCustomer = async (data) => {
   const response = await api.post('/customer/register', data)
   return response.data
 }
+
+// courierSphere/courier-sphere-frontend/src/api/customerApi.js
+
+export const verifyPayment = async (paymentData) => {
+  const response = await api.post(`/customer/verify-payment`, null, {
+    params: {
+      orderId: paymentData.orderId,
+      paymentId: paymentData.paymentId,
+      signature: paymentData.signature
+    }
+  });
+  return response.data;
+};

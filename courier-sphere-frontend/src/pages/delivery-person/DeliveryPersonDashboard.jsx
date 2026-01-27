@@ -173,8 +173,10 @@ const DeliveryPersonDashboard = () => {
                     required
                     className="w-full px-3 py-2 border border-gray-300 rounded-md"
                   >
-                    <option value="PICKED_UP">Picked Up</option>
-                    <option value="IN_PROGRESS">In Progress</option>
+                    <option value="BOOKED">Booked</option>
+                    <option value="PROCESSING">Processing</option>
+                    <option value="PROCESSED">Processed</option>
+                    <option value="ASSIGNED">Assigned</option>
                     <option value="OUT_FOR_DELIVERY">Out for Delivery</option>
                     <option value="DELIVERED">Delivered</option>
                   </select>
