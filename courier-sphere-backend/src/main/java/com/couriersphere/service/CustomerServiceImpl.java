@@ -1,5 +1,6 @@
 package com.couriersphere.service;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
@@ -207,8 +208,6 @@ public class CustomerServiceImpl implements CustomerService {
 			courier.setWeight(request.getWeight());
 			courier.setReceiverName(request.getReceiverName());
 			courier.setReceiverAddress(request.getReceiverAddress());
-			courier.setReceiverContact(request.getReceiverContact());
-			courier.setReceiverPincode(request.getReceiverPincode());
 
 			// Payment Fields
 			courier.setAmount(amount);

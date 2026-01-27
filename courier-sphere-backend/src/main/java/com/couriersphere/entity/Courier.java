@@ -38,12 +38,10 @@ public class Courier {
     @Column(unique = true)
     private String trackingNumber;
 
-    private String courierName;
     @Enumerated(EnumType.STRING)
     private CourierCategory courierCategory;
     
     private double weight;
-    private String senderName;
     private String receiverName;
 	private String receiverAddress;
 	
@@ -77,5 +75,4 @@ public class Courier {
         status = CourierStatus.BOOKED;
     }
 
-    
 }

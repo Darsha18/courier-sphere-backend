@@ -2,6 +2,7 @@ package com.couriersphere.service;
 
 import com.couriersphere.dto.*;
 import com.couriersphere.entity.*;
+import com.couriersphere.enums.CourierStatus;
 import com.couriersphere.repository.*;
 import org.springframework.stereotype.Service;
 
@@ -64,7 +65,7 @@ public class CourierCompanyServiceImpl implements CourierCompanyService {
                         .toUpperCase()
         );
 
-        courier.setStatus("ASSIGNED");
+        courier.setStatus(CourierStatus.ASSIGNED);
 
         courierRepo.save(courier);
 
@@ -165,7 +166,7 @@ public class CourierCompanyServiceImpl implements CourierCompanyService {
                                 c.getId(),
                                 c.getTrackingNumber(),
                                 c.getCustomer().getId(),
-                                c.getCourierType(),
+                                c.getCourierCategory() != null ? c.getCourierCategory().toString() : "N/A",
                                 c.getWeight(),
                                 c.getCustomer().getFirstName() + " " +
                                         c.getCustomer().getLastName(),
@@ -179,7 +180,7 @@ public class CourierCompanyServiceImpl implements CourierCompanyService {
                                 c.getDeliveryPerson() != null
                                         ? c.getDeliveryPerson().getContact()
                                         : "N/A",
-                                c.getStatus(),
+                                c.getStatus() != null ? c.getStatus().toString() : "N/A",
                                 c.getDeliveryMessage()
                         ))
                         .toList();
