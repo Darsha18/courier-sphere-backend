@@ -1,16 +1,1 @@
-# Maven
-/target/
-
-# IDE / Workspace
-.classpath
-.project
-.settings/
-.metadata/
-.idea/
-.vscode/
-
-# Logs
-*.log
-
-# Local config
-application-local.properties
+/.metadata/
